@@ -1,23 +1,12 @@
-var express = require('express');
-var app     = express();
-var PORT    = process.env.PORT || 3000;
-var todos   = [
-    {
-        id         : 1,
-        description: 'Meet Mom for Lunch',
-        completed  : false
-    },
-    {
-        id          : 2,
-        description : 'Go to Market',
-        completed   : false
-    },
-    {
-        id          : 3,
-        description : 'Send Onyx Money',
-        completed   : true
-    }
-]
+var express    = require('express');
+var bodyParser = require('body-parser');
+var app        = express();
+var PORT       = process.env.PORT || 3000;
+var todos      = [];
+var todoNextID = 1;
+
+// Set up body-parser middleware using app.use
+app.use(bodyParser.json());
 
 // Route for /
 app.get('/', function(req, res){
@@ -48,6 +37,14 @@ app.get('/todos/:id', function(req, res){
         res.json(matchedTodo);
     }
     
+});
+
+// POST. URL -> /todos (You will need body-parser module)
+// body-parser is an express middleware
+app.post('/todos', function(req, res){
+    var body = req.body;
+    console.log('description: ' + body.description);
+    res.json(body);
 });
 
 app.listen(PORT, function(){
