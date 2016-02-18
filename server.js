@@ -43,7 +43,13 @@ app.get('/todos/:id', function(req, res){
 // body-parser is an express middleware
 app.post('/todos', function(req, res){
     var body = req.body;
-    console.log('description: ' + body.description);
+    // Add id attribute to the body object
+    body.id = todoNextID++;
+    
+    // Push the body object to the todos array
+    todos.push(body)
+    
+    // send the result back to user
     res.json(body);
 });
 
