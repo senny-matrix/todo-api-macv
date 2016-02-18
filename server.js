@@ -38,7 +38,19 @@ app.get('/todos/:id', function(req, res){
 // POST. URL -> /todos (You will need body-parser module)
 // body-parser is an express middleware
 app.post('/todos', function(req, res){
-    var body = req.body;
+    var body = _.pick(req.body, 'description', 'completed');
+    
+    // Perform validation to make sure description
+    // is string and completed is boolean
+    if(!_.isBoolean(body.completed) || !_.isString(body.description) || body.description.trim().length === 0){
+        // 400 means request can't be completed because
+        // bad data was provided
+        return res.status(400).send();
+    }
+    
+    // Make the body.description to be the trimmed value
+    body.description = body.description.trim();
+    
     // Add id attribute to the body object
     body.id = todoNextID++;
     
