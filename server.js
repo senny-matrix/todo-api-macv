@@ -74,6 +74,41 @@ app.delete('/todos/:id', function(req, res){
     }
 });
 
+// PUT : URL -> /todos/:id (update)
+app.put('/todos/:id', function(req, res){
+    var todoId      = parseInt(req.params.id, 10);
+    var matchedTodo = _.findWhere(todos,{id:todoId});
+    var body            = _.pick(req.body, 'description', 'completed');
+    var validAttributes = {};
+    
+    if(!matchedTodo){
+        return res.status(404).json({"error":"There is no TODO with given ID!"});
+    }
+    
+    if(body.hasOwnProperty('completed') && _.isBoolean(body.completed)){
+        validAttributes.completed = body.completed;
+    }else if(body.hasOwnProperty('completed')){
+        // Bad
+        return res.status(400).json({"error": "Bad data, should be true or false"});
+    }else{
+        // Never provided attributes, no problem here
+    }
+    
+    if(body.hasOwnProperty('description') && _.isString(body.description) && body.description.trim().length > 0){
+        validAttributes.description = body.description;
+    }else if(body.hasOwnProperty('description')){
+        // Bad
+        return res.status(400).json({"error": "Bad Description"});
+    }else{
+        // Never provided attibutes, no problem
+    }
+    
+    // If we reach this far, then everything is ok, we can proceed
+    // updating
+    matchedTodo = _.extend(matchedTodo, validAttributes);
+    res.json(matchedTodo);
+});
+
 app.listen(PORT, function(){
    console.log('Express listening at port ' + PORT + '!'); 
 });
