@@ -14,11 +14,21 @@ app.get('/', function(req, res){
    res.send('Todo API Root'); 
 });
 
-// Get request. URL : /todos
+// Get request. URL : /todos?completed=true
 app.get('/todos', function(req, res){
     // You can direct send convert array or object to string and 
     // send it back as follows
-    res.json(todos);
+    var queryParams = req.query;
+    filteredTodos = todos;
+    
+    if (queryParams.hasOwnProperty('completed') && queryParams.completed === 'true'){
+        filteredTodos = _.where(filteredTodos,{completed:true});
+    }else if(queryParams.hasOwnProperty('completed') && queryParams.completed === 'false'){
+        filteredTodos = _.where(filteredTodos,{completed:false});
+    }
+    
+    
+    res.json(filteredTodos);
 });
 
 // Get individual todo request. URL : /todos/:id
